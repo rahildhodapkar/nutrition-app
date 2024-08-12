@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function Form({ onLoginSuccess }) {
+export default function UserAuth({ onLoginSuccess }) {
   const [formData, setFormData] = useState({
     username: "",
     password: "",

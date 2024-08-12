@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./App.css";
-import Form from "./components/Form";
+import UserAuth from "./components/UserAuth";
 import Layout from "./components/Layout";
 
 function App() {
@@ -13,9 +13,9 @@ function App() {
   };
 
   return (
-    <>
-      {isLoggedIn ? <Layout /> : <Form onLoginSuccess={handleLoginSuccess} />}
-    </>
+    <div>
+      {!isLoggedIn ? <UserAuth onLoginSuccess={handleLoginSuccess} /> : <Layout />}
+    </div>
   );
 }
 

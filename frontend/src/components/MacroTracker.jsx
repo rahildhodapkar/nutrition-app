@@ -1,0 +1,1 @@
+export default function MacroTracker() {return <h1>We are now in macros</h1>}
