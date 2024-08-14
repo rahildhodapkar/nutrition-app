@@ -6,15 +6,17 @@ import Layout from "./components/Layout";
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [token, setToken] = useState(null);
+  const [username, setUsername] = useState(null)
 
-  const handleLoginSuccess = (token) => {
+  const handleLoginSuccess = (token, username) => {
     setToken(token);
+    setUsername(username);
     setIsLoggedIn(true);
   };
 
   return (
     <div>
-      {!isLoggedIn ? <UserAuth onLoginSuccess={handleLoginSuccess} /> : <Layout />}
+      {!isLoggedIn ? <UserAuth onLoginSuccess={handleLoginSuccess} /> : <Layout username={username}/>}
     </div>
   );
 }

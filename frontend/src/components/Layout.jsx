@@ -5,7 +5,7 @@ import MacroTracker from "./MacroTracker";
 import Recipes from "./Recipes";
 import Sidebar from "./Sidebar";
 
-export default function Layout() {
+export default function Layout({ username }) {
   const [componentToRender, setComponentToRender] = useState(<Home />);
 
   const handleWhichComponent = (e) => {
@@ -14,7 +14,7 @@ export default function Layout() {
     if (id === "0") {
       cmpnt = <Home />;
     } else if (id === "1") {
-      cmpnt = <FoodTracker />;
+      cmpnt = <FoodTracker username={username}/>;
     } else if (id === "2") {
       cmpnt = <MacroTracker />;
     } else {

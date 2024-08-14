@@ -58,7 +58,7 @@ export default function UserAuth({ onLoginSuccess }) {
       const result = await response.json();
 
       if (response.ok) {
-        onLoginSuccess(result.token);
+        onLoginSuccess(result.token, formData.username);
       } else {
         setResponseMessage(result.message || "Something went wrong");
       }
