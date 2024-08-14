@@ -7,12 +7,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Users {
+model User {
   id         Int      @id @default(autoincrement())
   username   String   @unique
   password   String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+  foods      Food[]
 }
 
-
+model Food {
+  id          Int      @id @default(autoincrement())
+  description String
+  brandName   String?
+  protein     Float
+  fat         Float
+  carbs       Float
+  calories    Float
+  createdAt   DateTime 
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+}

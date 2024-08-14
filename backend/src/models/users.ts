@@ -4,7 +4,7 @@ import prisma from "../prisma";
 const saltNumber = 10;
 
 export async function getUser(username: string) {
-  const user = await prisma.users.findFirst({
+  const user = await prisma.user.findFirst({
     where: {
       username: username,
     },
@@ -14,7 +14,7 @@ export async function getUser(username: string) {
 
 export async function createUser(username: string, password: string) {
   const hashedPassword = await bcrypt.hash(password, saltNumber);
-  const user = await prisma.users.create({
+  const user = await prisma.user.create({
     data: {
       username: username,
       password: hashedPassword,

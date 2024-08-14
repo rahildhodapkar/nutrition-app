@@ -10,7 +10,7 @@ const authRouter = express.Router();
 passport.use(
   new LocalStrategy(async (username: string, password: string, done: any) => {
     try {
-      const user = await prisma.users.findUnique({
+      const user = await prisma.user.findUnique({
         where: { username: username },
       });
       if (!user) {
