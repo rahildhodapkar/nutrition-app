@@ -3,6 +3,7 @@ import {
   addFoodAtDate,
   deleteFoodById,
   getFoodsAtDate,
+  getAllFoods,
   updateFoodById,
 } from "../models/food";
 
@@ -85,6 +86,21 @@ router.get("/usda/getFoods", async (req, res) => {
     res.status(500).json({ message: error });
   }
 });
+
+router.get("/usda/getAllFoods", async (req, res) => {
+  const { username } = req.query;
+
+  try {
+    const foods = await getAllFoods(username as string)
+    if (foods.length > 0) {
+      res.status(200).json(foods);
+    } else {
+      res.status(404).json({ message: "No entries found for this date!" })
+    }
+  } catch (err) {
+    res.status(500).json({ message: err })
+  }
+})
 
 router.put("/usda/updateFood", async (req, res) => {
   const {

@@ -13,7 +13,18 @@ model User {
   password   String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  foods      Food[]
+
+  weights Weight[]
+  foods   Food[]
+  macros  Macros?
+}
+
+model Weight {
+  id        Int      @id @default(autoincrement())
+  weight    Float
+  createdAt DateTime @default(now())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Food {
@@ -24,7 +35,17 @@ model Food {
   fat         Float
   carbs       Float
   calories    Float
-  createdAt   DateTime 
+  createdAt   DateTime
   userId      Int
   user        User     @relation(fields: [userId], references: [id])
+}
+
+model Macros {
+  id       Int   @id @default(autoincrement())
+  calories Float
+  protein  Float
+  fat      Float
+  carbs    Float
+  userId   Int   @unique
+  user     User  @relation(fields: [userId], references: [id])
 }
