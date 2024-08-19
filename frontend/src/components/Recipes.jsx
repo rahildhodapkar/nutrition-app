@@ -39,7 +39,9 @@ export default function Recipes() {
           new URLSearchParams({
             ingredients: formData.ingredients,
             calories: formData.calories,
-          }).toString()
+          }).toString(), {
+            credentials: "include"
+          }
       );
 
       const result = await response.json();

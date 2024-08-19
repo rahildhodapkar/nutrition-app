@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import useDebounce from "../hooks/useDebounce";
 import FoodCard from "./FoodCard";
+import { CaloriesLeft, ProteinLeft, FatLeft, CarbsLeft } from "./Graphs"; // Import the charts
 
 export default function FoodTracker({ username }) {
   const [query, setQuery] = useState("");
@@ -10,6 +11,19 @@ export default function FoodTracker({ username }) {
   const [displayLogOrAdd, setDisplayLogOrAdd] = useState(1);
   const [foodLog, setFoodLog] = useState("Nothing to see here");
   const [foodLogDate, setFoodLogDate] = useState(new Date());
+  const [consumedMacros, setConsumedMacros] = useState({
+    calories: 0,
+    protein: 0,
+    fat: 0,
+    carbs: 0,
+  });
+  const [totalMacros, setTotalMacros] = useState({
+    calories: 0,
+    protein: 0,
+    fat: 0,
+    carbs: 0,
+  });
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleResults = (result) => {
     setFoods(result.foods);
@@ -22,17 +36,17 @@ export default function FoodTracker({ username }) {
         new URLSearchParams({ query: searchTerm });
 
       try {
-        const response = await fetch(url);
+        const response = await fetch(url, {
+          credentials: "include"
+        });
         const result = await response.json();
 
         if (response.ok) {
           handleResults(result);
         } else {
-          console.log("Error:", result.message || "Failed to fetch data");
           setFoods("Nothing to see here");
         }
       } catch (err) {
-        console.error("Error:", err);
         setFoods("Nothing to see here");
       }
     }, 300),
@@ -42,28 +56,73 @@ export default function FoodTracker({ username }) {
   useEffect(() => {
     if (displayLogOrAdd === 1) {
       getFoods(foodLogDate);
+      fetchTotalMacros();
     }
   }, [displayLogOrAdd, foodLogDate]);
 
   const getFoods = async (date) => {
+    setIsLoading(true);
     try {
       const response = await fetch(
         "http://localhost:8081/usda/getFoods?" +
           new URLSearchParams({
             username: username,
-            createdAt: date.toISOString(), 
-          })
+            createdAt: date.toISOString(),
+          }), {
+            credentials: "include"
+          }
       );
       const result = await response.json();
 
       if (response.ok) {
         setFoodLog(result);
+        calculateConsumedMacros(result);
       } else {
         setFoodLog("No foods at this date.");
+        setConsumedMacros({ calories: 0, protein: 0, fat: 0, carbs: 0 });
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
       setFoodLog("An error occurred");
+      setConsumedMacros({ calories: 0, protein: 0, fat: 0, carbs: 0 });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const calculateConsumedMacros = (foods) => {
+    const totalConsumed = foods.reduce(
+      (acc, food) => {
+        acc.calories += food.calories || 0;
+        acc.protein += food.protein || 0;
+        acc.fat += food.fat || 0;
+        acc.carbs += food.carbs || 0;
+        return acc;
+      },
+      { calories: 0, protein: 0, fat: 0, carbs: 0 }
+    );
+    setConsumedMacros(totalConsumed);
+  };
+
+  const fetchTotalMacros = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8081/stats/getMacros?username=${username}`
+      , {credentials: "include"});
+      const result = await response.json();
+
+      if (response.ok && result) {
+        setTotalMacros({
+          calories: parseFloat(result.calories),
+          protein: parseFloat(result.protein),
+          fat: parseFloat(result.fat),
+          carbs: parseFloat(result.carbs),
+        });
+      } else {
+        console.error("No total macros found for the user.");
+      }
+    } catch (err) {
+      console.error("Error fetching total macros:", err);
     }
   };
 
@@ -86,7 +145,7 @@ export default function FoodTracker({ username }) {
       calories: food.foodNutrients[3]?.value || 0,
     };
     setSelectedFood(newFood);
-    setIsDialogVisible(true); 
+    setIsDialogVisible(true);
   };
 
   const handleNavClick = (page) => {
@@ -95,12 +154,12 @@ export default function FoodTracker({ username }) {
 
   const handleDateChange = (e) => {
     const val = e.target.value;
-    setFoodLogDate(new Date(val)); 
+    setFoodLogDate(new Date(val));
   };
 
   const handleDialogClose = () => {
     setIsDialogVisible(false);
-    setSelectedFood(null); 
+    setSelectedFood(null);
   };
 
   return (
@@ -128,6 +187,26 @@ export default function FoodTracker({ username }) {
                 <li key={food.id}>{food.description}</li>
               ))}
             </ul>
+          )}
+          {!isLoading && typeof foodLog !== "string" && (
+            <div className="macro-charts">
+              <CaloriesLeft
+                caloriesConsumed={consumedMacros.calories}
+                caloriesTotal={totalMacros.calories}
+              />
+              <ProteinLeft
+                proteinConsumed={consumedMacros.protein}
+                proteinTotal={totalMacros.protein}
+              />
+              <FatLeft
+                fatConsumed={consumedMacros.fat}
+                fatTotal={totalMacros.fat}
+              />
+              <CarbsLeft
+                carbsConsumed={consumedMacros.carbs}
+                carbsTotal={totalMacros.carbs}
+              />
+            </div>
           )}
         </div>
       ) : (
@@ -165,10 +244,9 @@ export default function FoodTracker({ username }) {
         <FoodCard
           {...selectedFood}
           username={username}
-          onClose={handleDialogClose} 
+          onClose={handleDialogClose}
         />
       )}
     </>
   );
 }
-

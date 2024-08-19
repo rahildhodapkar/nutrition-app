@@ -74,6 +74,7 @@ export default function FoodCard({
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify(reqBody),
       });
 

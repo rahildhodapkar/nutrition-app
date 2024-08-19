@@ -6,17 +6,17 @@ import Recipes from "./Recipes";
 import Sidebar from "./Sidebar";
 
 export default function Layout({ username }) {
-  const [componentToRender, setComponentToRender] = useState(<Home />);
+  const [componentToRender, setComponentToRender] = useState(<Home username={username}/>);
 
   const handleWhichComponent = (e) => {
     const id = e.target.id;
     let cmpnt;
     if (id === "0") {
-      cmpnt = <Home />;
+      cmpnt = <Home username={username}/>;
     } else if (id === "1") {
-      cmpnt = <FoodTracker username={username}/>;
+      cmpnt = <FoodTracker username={username} />;
     } else if (id === "2") {
-      cmpnt = <MacroTracker />;
+      cmpnt = <MacroTracker username={username}/>;
     } else {
       cmpnt = <Recipes />;
     }
