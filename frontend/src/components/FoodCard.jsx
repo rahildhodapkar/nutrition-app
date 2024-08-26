@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const G_IN_OZ = 28.3495;
 const BASE_WEIGHT_IN_G = 100;
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function FoodCard({
   description,

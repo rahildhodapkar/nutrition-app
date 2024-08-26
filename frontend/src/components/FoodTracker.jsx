@@ -3,7 +3,7 @@ import useDebounce from "../hooks/useDebounce";
 import FoodCard from "./FoodCard";
 import { CaloriesLeft, ProteinLeft, FatLeft, CarbsLeft } from "./Graphs";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function FoodTracker({ username }) {
   const [query, setQuery] = useState("");

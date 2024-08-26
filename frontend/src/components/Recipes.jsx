@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import RecipeCard from "./RecipeCard";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function Recipes() {
   const [formData, setFormData] = useState({

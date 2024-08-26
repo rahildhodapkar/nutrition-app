@@ -20,7 +20,7 @@ export default function MacroTracker({ username }) {
   });
   const [isLoading, setIsLoading] = useState(true);
 
-  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchExistingMacros = async () => {

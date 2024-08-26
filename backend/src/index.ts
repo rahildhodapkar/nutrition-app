@@ -1,4 +1,3 @@
-import * as functions from "firebase-functions";
 import cors from "cors";
 import dotenv from "dotenv";
 import express, { Request, Response, NextFunction } from "express";
@@ -47,7 +46,7 @@ app.use(
 
 app.use(
   cors({
-    origin: true, 
+    origin: "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
@@ -58,12 +57,16 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use("/", authRouter);
+
 app.use("/", isAuthenticated, edamamRouter);
 app.use("/", isAuthenticated, usdaRouter);
 app.use("/", isAuthenticated, statsRouter);
 
 app.get('/auth/check', isAuthenticated, (req: Request, res: Response) => {
-  res.status(200).json({ user: req.user });
+  res.status(200).json({ user: req.user }); 
 });
 
-exports.api = functions.https.onRequest(app);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}`);
+});

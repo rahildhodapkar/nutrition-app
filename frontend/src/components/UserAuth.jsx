@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import mp4Video from "../assets/bg-vid.mp4";
 import webmVideo from "../assets/bg-vid.webm";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function UserAuth({ onLoginSuccess }) {
   const [formData, setFormData] = useState({
