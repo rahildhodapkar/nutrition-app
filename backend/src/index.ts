@@ -38,6 +38,23 @@ const pgSessionStore = pgSession(session);
 
 app.set("trust proxy", 1);
 
+app.use((req, res, next) => {
+  console.log('Incoming request:', req.method, req.url);
+  console.log('Request headers:', req.headers);
+  
+  const oldWrite = res.write;
+  const oldEnd = res.end;
+
+  const chunks: Buffer[] = [];
+
+  res.write = function (chunk: any) {
+    chunks.push(Buffer.from(chunk));
+    return oldWrite.apply(res, arguments as any);
+  };
+
+  next();
+});
+
 app.use(
   session({
     store: new pgSessionStore({
@@ -77,9 +94,14 @@ app.use(
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
 
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+});
 
 app.use(express.json());
 

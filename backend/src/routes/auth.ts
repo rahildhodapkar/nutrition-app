@@ -51,15 +51,19 @@ authRouter.post("/auth/login", (req, res) => {
       if (err) {
         return res.status(500).json({ message: "Login failed" });
       }
-      req.session.save((err) => {
-        if (err) {
-          console.error('Session save error:', err);
-          return res.status(500).json({ message: 'Error creating session' });
-        }
-        return res.json({
-          message: "Login successful",
-          user: { username: user.username },
-        });
+      
+      res.cookie('testCookie', 'testValue', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+        maxAge: 24 * 60 * 60 * 1000 
+      });
+
+      console.log('Response headers:', res.getHeaders());
+
+      return res.json({
+        message: "Login successful",
+        user: { username: user.username },
       });
     });
   })(req, res);
