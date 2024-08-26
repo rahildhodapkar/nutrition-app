@@ -9,6 +9,8 @@ import edamamRouter from "./routes/edamam";
 import statsRouter from "./routes/stats";
 import usdaRouter from "./routes/usda";
 
+console.log(process.env.NODE_ENV)
+
 declare global {
   namespace Express {
     interface Request {
@@ -32,6 +34,8 @@ function isAuthenticated(req: Request, res: Response, next: NextFunction) {
 }
 
 const pgSessionStore = pgSession(session);
+
+console.log(process.env.NODE_ENV)
 
 app.use(
   session({
@@ -66,6 +70,7 @@ app.use(
       }
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   })
 );
 
