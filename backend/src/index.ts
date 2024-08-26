@@ -2,6 +2,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express, { Request, Response, NextFunction } from "express";
 import session from "express-session";
+import pgSession from "connect-pg-simple";
 import passport from "passport";
 import authRouter from "./routes/auth";
 import edamamRouter from "./routes/edamam";
@@ -30,14 +31,19 @@ function isAuthenticated(req: Request, res: Response, next: NextFunction) {
   res.status(401).json({ message: "Unauthorized" });
 }
 
+const pgSessionStore = pgSession(session);
+
 app.use(
   session({
-    secret: process.env.SECRET_SESSION as string,
+    store: new pgSessionStore({
+      conString: process.env.DATABASE_URL, 
+    }),
+    secret: process.env.SECRET_SESSION as string, 
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 1000 * 60 * 60 * 24, // 1 day
+      secure: process.env.NODE_ENV === "production", 
+      maxAge: 1000 * 60 * 60 * 24, 
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       httpOnly: true,
     },
@@ -46,7 +52,7 @@ app.use(
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.NODE_ENV === "production" ? "https://nutrition-app-49a16.web.app" : "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
