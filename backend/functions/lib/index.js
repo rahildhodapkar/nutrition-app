@@ -25,6 +25,7 @@ const pgSessionStore = (0, connect_pg_simple_1.default)(express_session_1.defaul
 app.use((0, express_session_1.default)({
     store: new pgSessionStore({
         conString: process.env.DATABASE_URL,
+        createTableIfMissing: true,
     }),
     secret: process.env.SECRET_SESSION,
     resave: false,
@@ -36,9 +37,19 @@ app.use((0, express_session_1.default)({
         httpOnly: true,
     },
 }));
+const allowedOrigins = [
+    "https://nutrition-app-49a16.web.app",
+    "http://localhost:5173",
+];
 app.use((0, cors_1.default)({
-    origin: process.env.NODE_ENV === "production" ? "https://nutrition-app-49a16.web.app" : "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        }
+        else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
     credentials: true,
 }));
 app.use(express_1.default.json());
@@ -48,8 +59,12 @@ app.use("/", auth_1.default);
 app.use("/", isAuthenticated, edamam_1.default);
 app.use("/", isAuthenticated, usda_1.default);
 app.use("/", isAuthenticated, stats_1.default);
-app.get('/auth/check', isAuthenticated, (req, res) => {
+app.get("/auth/check", isAuthenticated, (req, res) => {
     res.status(200).json({ user: req.user });
+});
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: "Internal Server Error" });
 });
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
