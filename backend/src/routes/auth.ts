@@ -51,9 +51,15 @@ authRouter.post("/auth/login", (req, res) => {
       if (err) {
         return res.status(500).json({ message: "Login failed" });
       }
-      return res.json({
-        message: "Login successful",
-        user: { username: user.username },
+      req.session.save((err) => {
+        if (err) {
+          console.error('Session save error:', err);
+          return res.status(500).json({ message: 'Error creating session' });
+        }
+        return res.json({
+          message: "Login successful",
+          user: { username: user.username },
+        });
       });
     });
   })(req, res);

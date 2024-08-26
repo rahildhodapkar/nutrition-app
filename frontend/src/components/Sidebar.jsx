@@ -17,7 +17,6 @@ export default function Sidebar({ setComponent, cb }) {
     localStorage.removeItem("user");
     cb(null);
     window.location.reload();
-    console.log("MADE IT MAM")
   };
 
   return (

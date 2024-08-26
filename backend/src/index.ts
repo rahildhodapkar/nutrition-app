@@ -19,7 +19,7 @@ declare global {
       isAuthenticated(): this is AuthenticatedRequest;
     }
   }
-
+  
   interface AuthenticatedRequest extends Request {
     user: any;
   }
@@ -35,6 +35,8 @@ function isAuthenticated(req: Request, res: Response, next: NextFunction) {
 }
 
 const pgSessionStore = pgSession(session);
+
+app.set("trust proxy", 1);
 
 app.use(
   session({
@@ -77,6 +79,7 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   })
 );
+
 
 app.use(express.json());
 
