@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { CaloriesOverTime, WeightOverTime } from "./Graphs";
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 export default function Home({ username }) {
   const [weight, setWeight] = useState("");
   const [weights, setWeights] = useState(null);
@@ -18,7 +20,7 @@ export default function Home({ username }) {
     setIsLoadingWeights(true);
     try {
       const response = await fetch(
-        `http://localhost:8081/stats/getWeights?username=${username}`,
+        `${API_BASE_URL}/stats/getWeights?username=${username}`,
         { credentials: "include" }
       );
       const result = await response.json();
@@ -42,7 +44,7 @@ export default function Home({ username }) {
     setIsLoadingCalories(true);
     try {
       const response = await fetch(
-        `http://localhost:8081/usda/getAllFoods?username=${username}`,
+        `${API_BASE_URL}/usda/getAllFoods?username=${username}`,
         { credentials: "include" }
       );
       const result = await response.json();
@@ -83,7 +85,7 @@ export default function Home({ username }) {
     }
 
     try {
-      const response = await fetch("http://localhost:8081/stats/addWeight", {
+      const response = await fetch(`${API_BASE_URL}/stats/addWeight`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

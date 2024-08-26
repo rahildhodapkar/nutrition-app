@@ -1,10 +1,23 @@
 import { useState } from "react";
 
-export default function Sidebar({ setComponent }) {
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+export default function Sidebar({ setComponent, cb }) {
   const [sidebarVisible, setSidebarVisible] = useState(false);
 
   const handleShowSidebarButton = () => {
     setSidebarVisible((prev) => !prev);
+  };
+
+  const handleLogout = async () => {
+    await fetch(`${API_BASE_URL}/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
+    localStorage.removeItem("user");
+    cb(null);
+    window.location.reload();
+    console.log("MADE IT MAM")
   };
 
   return (
@@ -29,24 +42,45 @@ export default function Sidebar({ setComponent }) {
             sidebarVisible ? "translate-x-0" : "translate-x-full"
           } z-30`}
         >
-          <section className="p-4 rounded-xl hover:bg-orange-400 transition duration-100 ease-out">
-            <button id="0" onClick={setComponent}>
+          <section className="rounded-xl hover:bg-orange-400 transition duration-100 ease-out">
+            <button
+              id="0"
+              className="w-full p-4 text-left"
+              onClick={setComponent}
+            >
               Home
             </button>
           </section>
-          <section className="p-4 rounded-xl hover:bg-orange-400 transition duration-100 ease-out">
-            <button id="1" onClick={setComponent}>
+          <section className="rounded-xl hover:bg-orange-400 transition duration-100 ease-out">
+            <button
+              id="1"
+              className="w-full p-4 text-left"
+              onClick={setComponent}
+            >
               Foods
             </button>
           </section>
-          <section className="p-4 rounded-xl hover:bg-orange-400 transition duration-100 ease-out">
-            <button id="2" onClick={setComponent}>
+          <section className="rounded-xl hover:bg-orange-400 transition duration-100 ease-out">
+            <button
+              id="2"
+              className="w-full p-4 text-left"
+              onClick={setComponent}
+            >
               Macros
             </button>
           </section>
-          <section className="p-4 rounded-xl hover:bg-orange-400 transition duration-100 ease-out">
-            <button id="3" onClick={setComponent}>
+          <section className="rounded-xl hover:bg-orange-400 transition duration-100 ease-out">
+            <button
+              id="3"
+              className="w-full p-4 text-left"
+              onClick={setComponent}
+            >
               Recipe Inspiration
+            </button>
+          </section>
+          <section className="border-orange-400 rounded-xl mt-auto hover:bg-orange-400 transition duration-100 ease-out">
+            <button id="4" className="w-full p-4" onClick={handleLogout}>
+              Logout
             </button>
           </section>
         </aside>

@@ -13,7 +13,7 @@ function App() {
 
   return (
     <div>
-      {!isLoggedIn ? <UserAuth onLoginSuccess={handleLoginSuccess} /> : <Layout username={username}/>}
+      {!isLoggedIn ? <UserAuth onLoginSuccess={handleLoginSuccess} /> : <Layout username={username} onLoginSuccess={handleLoginSuccess}/>}
     </div>
   );
 }

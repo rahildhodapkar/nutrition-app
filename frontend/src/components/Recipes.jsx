@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import RecipeCard from "./RecipeCard";
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 export default function Recipes() {
   const [formData, setFormData] = useState({
     ingredients: "",
@@ -35,7 +37,7 @@ export default function Recipes() {
 
     try {
       const response = await fetch(
-        "http://localhost:8081/edamam?" +
+        `${API_BASE_URL}/edamam?` +
           new URLSearchParams({
             ingredients: formData.ingredients,
             calories: formData.calories,
@@ -88,7 +90,7 @@ export default function Recipes() {
       </div>
       <div className="recipes-container">
         {typeof recipesToShow === "string" ? (
-          <p>{recipesToShow}</p>
+          <p className="text-center">{recipesToShow}</p>
         ) : (
           <div>
             <h3 className="text-center text-3xl">Results</h3>

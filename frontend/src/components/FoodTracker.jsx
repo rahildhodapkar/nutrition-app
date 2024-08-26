@@ -3,6 +3,8 @@ import useDebounce from "../hooks/useDebounce";
 import FoodCard from "./FoodCard";
 import { CaloriesLeft, ProteinLeft, FatLeft, CarbsLeft } from "./Graphs";
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 export default function FoodTracker({ username }) {
   const [query, setQuery] = useState("");
   const [foods, setFoods] = useState("Nothing to see here");
@@ -32,7 +34,7 @@ export default function FoodTracker({ username }) {
   const debouncedSearch = useCallback(
     useDebounce(async (searchTerm) => {
       const url =
-        "http://localhost:8081/usda?" +
+        `${API_BASE_URL}/usda?` +
         new URLSearchParams({ query: searchTerm });
 
       try {
@@ -64,7 +66,7 @@ export default function FoodTracker({ username }) {
     setIsLoading(true);
     try {
       const response = await fetch(
-        "http://localhost:8081/usda/getFoods?" +
+        `${API_BASE_URL}/usda/getFoods?` +
           new URLSearchParams({
             username: username,
             createdAt: date.toISOString(),
@@ -108,7 +110,7 @@ export default function FoodTracker({ username }) {
   const fetchTotalMacros = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8081/stats/getMacros?username=${username}`,
+        `${API_BASE_URL}/stats/getMacros?username=${username}`,
         { credentials: "include" }
       );
       const result = await response.json();

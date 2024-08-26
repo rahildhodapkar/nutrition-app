@@ -5,7 +5,7 @@ import MacroTracker from "./MacroTracker";
 import Recipes from "./Recipes";
 import Sidebar from "./Sidebar";
 
-export default function Layout({ username }) {
+export default function Layout({ username, onLoginSuccess }) {
   const [componentToRender, setComponentToRender] = useState(
     <Home username={username} />
   );
@@ -30,7 +30,7 @@ export default function Layout({ username }) {
       <button className="absolute top-4 left-4 text-2xl font-bold" onClick={() => {
         setComponentToRender(<Home username={username} />)
       }}>Nutron</button>
-      <Sidebar setComponent={handleWhichComponent} />
+      <Sidebar setComponent={handleWhichComponent} cb={onLoginSuccess} />
       <main className="flex-1">{componentToRender}</main>
     </div>
   );

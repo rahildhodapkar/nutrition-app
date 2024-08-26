@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import mp4Video from "../assets/bg-vid.mp4";
 import webmVideo from "../assets/bg-vid.webm";
+
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 export default function UserAuth({ onLoginSuccess }) {
   const [formData, setFormData] = useState({
@@ -9,6 +11,21 @@ export default function UserAuth({ onLoginSuccess }) {
   });
   const [responseMessage, setResponseMessage] = useState("");
   const [hasAccount, setHasAccount] = useState(true);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      fetch(`${API_BASE_URL}/auth/check`, {
+        credentials: "include"
+      }).then(response => {
+        if (response.ok) {
+          onLoginSuccess(storedUser); 
+        } else {
+          localStorage.removeItem('user'); 
+        }
+      });
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,7 +39,7 @@ export default function UserAuth({ onLoginSuccess }) {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8081/auth/login", {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -33,7 +50,8 @@ export default function UserAuth({ onLoginSuccess }) {
 
       if (response.ok) {
         const result = await response.json();
-        onLoginSuccess(result.user.username);
+        localStorage.setItem('user', result.user.username); 
+        onLoginSuccess(result.user.username); 
       } else {
         const result = await response.json();
         setResponseMessage(result.message || "Something went wrong");
@@ -53,7 +71,7 @@ export default function UserAuth({ onLoginSuccess }) {
     }
 
     try {
-      const response = await fetch("http://localhost:8081/auth/register", {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

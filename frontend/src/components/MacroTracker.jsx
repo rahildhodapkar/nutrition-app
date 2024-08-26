@@ -20,11 +20,13 @@ export default function MacroTracker({ username }) {
   });
   const [isLoading, setIsLoading] = useState(true);
 
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
   useEffect(() => {
     const fetchExistingMacros = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8081/stats/getMacros?username=${username}`,
+          `${API_BASE_URL}/stats/getMacros?username=${username}`,
           { credentials: "include" }
         );
         const result = await response.json();
@@ -111,7 +113,7 @@ export default function MacroTracker({ username }) {
   const getFoods = async (date) => {
     try {
       const response = await fetch(
-        "http://localhost:8081/usda/getFoods?" +
+        `${API_BASE_URL}/usda/getFoods?` +
           new URLSearchParams({
             username: username,
             createdAt: date.toISOString(),
@@ -166,7 +168,7 @@ export default function MacroTracker({ username }) {
     setMacros(calculatedMacros);
 
     try {
-      const response = await fetch("http://localhost:8081/stats/upsertMacros", {
+      const response = await fetch(`${API_BASE_URL}/stats/upsertMacros`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

@@ -2,6 +2,7 @@ import { useState } from "react";
 
 const G_IN_OZ = 28.3495;
 const BASE_WEIGHT_IN_G = 100;
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 export default function FoodCard({
   description,
@@ -69,7 +70,7 @@ export default function FoodCard({
     };
 
     try {
-      const response = await fetch("http://localhost:8081/usda/addFood", {
+      const response = await fetch(`${API_BASE_URL}/usda/addFood`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
