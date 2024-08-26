@@ -7,6 +7,7 @@ const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const express_1 = __importDefault(require("express"));
 const express_session_1 = __importDefault(require("express-session"));
+const connect_pg_simple_1 = __importDefault(require("connect-pg-simple"));
 const passport_1 = __importDefault(require("passport"));
 const auth_1 = __importDefault(require("./routes/auth"));
 const edamam_1 = __importDefault(require("./routes/edamam"));
@@ -20,19 +21,23 @@ function isAuthenticated(req, res, next) {
     }
     res.status(401).json({ message: "Unauthorized" });
 }
+const pgSessionStore = (0, connect_pg_simple_1.default)(express_session_1.default);
 app.use((0, express_session_1.default)({
+    store: new pgSessionStore({
+        conString: process.env.DATABASE_URL,
+    }),
     secret: process.env.SECRET_SESSION,
     resave: false,
     saveUninitialized: false,
     cookie: {
         secure: process.env.NODE_ENV === "production",
-        maxAge: 1000 * 60 * 60 * 24, // 1 day
+        maxAge: 1000 * 60 * 60 * 24,
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         httpOnly: true,
     },
 }));
 app.use((0, cors_1.default)({
-    origin: "http://localhost:5173",
+    origin: process.env.NODE_ENV === "production" ? "https://nutrition-app-49a16.web.app" : "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
 }));
