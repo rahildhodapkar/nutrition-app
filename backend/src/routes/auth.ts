@@ -51,16 +51,8 @@ authRouter.post("/auth/login", (req, res) => {
       if (err) {
         return res.status(500).json({ message: "Login failed" });
       }
-      
-      res.cookie('testCookie', 'testValue', {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'none',
-        maxAge: 24 * 60 * 60 * 1000 
-      });
-
+      // Log headers to verify the session cookie
       console.log('Response headers:', res.getHeaders());
-
       return res.json({
         message: "Login successful",
         user: { username: user.username },
@@ -87,7 +79,13 @@ authRouter.get("/logout", (req, res) => {
     if (err) {
       return res.status(500).json({ message: "Logout failed" });
     }
-    res.json({ message: "Logout successful" });
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ message: "Failed to destroy session" });
+      }
+      res.clearCookie('connect.sid');  // Clear the session cookie
+      res.json({ message: "Logout successful" });
+    });
   });
 });
 

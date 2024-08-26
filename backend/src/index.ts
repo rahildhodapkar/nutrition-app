@@ -9,7 +9,7 @@ import edamamRouter from "./routes/edamam";
 import statsRouter from "./routes/stats";
 import usdaRouter from "./routes/usda";
 
-dotenv.config();  
+dotenv.config();
 
 console.log('NODE_ENV:', process.env.NODE_ENV);
 
@@ -19,7 +19,7 @@ declare global {
       isAuthenticated(): this is AuthenticatedRequest;
     }
   }
-  
+
   interface AuthenticatedRequest extends Request {
     user: any;
   }
@@ -38,23 +38,6 @@ const pgSessionStore = pgSession(session);
 
 app.set("trust proxy", 1);
 
-app.use((req, res, next) => {
-  console.log('Incoming request:', req.method, req.url);
-  console.log('Request headers:', req.headers);
-  
-  const oldWrite = res.write;
-  const oldEnd = res.end;
-
-  const chunks: Buffer[] = [];
-
-  res.write = function (chunk: any) {
-    chunks.push(Buffer.from(chunk));
-    return oldWrite.apply(res, arguments as any);
-  };
-
-  next();
-});
-
 app.use(
   session({
     store: new pgSessionStore({
@@ -65,10 +48,10 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === "production", 
-      maxAge: 1000 * 60 * 60 * 24,  
-      sameSite: "none",  
-      httpOnly: true,  
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 1000 * 60 * 60 * 24,  // 1 day
+      sameSite: "none",  // Needed for cross-site requests
+      httpOnly: true,  // Prevents client-side JavaScript from accessing the cookie
     },
   })
 );
@@ -97,11 +80,6 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
-
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Credentials', 'true');
-  next();
-});
 
 app.use(express.json());
 
