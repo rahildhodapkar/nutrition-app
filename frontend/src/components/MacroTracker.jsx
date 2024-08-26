@@ -25,7 +25,7 @@ export default function MacroTracker({ username }) {
       try {
         const response = await fetch(
           `http://localhost:8081/stats/getMacros?username=${username}`,
-          {credentials: "include"}
+          { credentials: "include" }
         );
         const result = await response.json();
 
@@ -115,7 +115,8 @@ export default function MacroTracker({ username }) {
           new URLSearchParams({
             username: username,
             createdAt: date.toISOString(),
-          }), {credentials: "include"}
+          }),
+        { credentials: "include" }
       );
       const result = await response.json();
 
@@ -189,169 +190,202 @@ export default function MacroTracker({ username }) {
 
   return (
     <>
-      <div className="macro-buttons">
-        <button onClick={() => handleNavClick("form")}>
-          Update or Set Macros
-        </button>
-        <button onClick={() => handleNavClick("graphs")}>Graphs</button>
-      </div>
-      {displayFormOrGraphs === 1 ? (
-        <>
-          <span>
-            Your TDEE is calculated using the Mifflin-St Jeor Equation
-          </span>
-          <form onSubmit={handleSubmit}>
-            <label htmlFor="sex">Sex:</label>
-            <select
-              id="sex"
-              name="sex"
-              value={sex}
-              onChange={(e) => setSex(e.target.value)}
-            >
-              <option value="">Select</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-            </select>
-            <label htmlFor="age">Age:</label>
-            <input
-              type="number"
-              id="age"
-              name="age"
-              value={age}
-              onChange={(e) => setAge(e.target.value)}
-              min={18}
-              required
-            />
-            <label htmlFor="weight">Weight (kg):</label>
-            <input
-              type="number"
-              id="weight"
-              name="weight"
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-              min={0}
-              required
-            />
-            <label htmlFor="height">Height (cm):</label>
-            <input
-              type="number"
-              id="height"
-              name="height"
-              value={height}
-              onChange={(e) => setHeight(e.target.value)}
-              min={0}
-              required
-            />
-            <label htmlFor="activityLevel">Activity Level:</label>
-            <select
-              id="activityLevel"
-              name="activityLevel"
-              value={activityLevel}
-              onChange={(e) => setActivityLevel(e.target.value)}
-              required
-            >
-              <option value="sedentary">
-                Sedentary (little to no exercise)
-              </option>
-              <option value="light">
-                Lightly active (light exercise/sports 1-3 days/week)
-              </option>
-              <option value="moderate">
-                Moderately active (moderate exercise/sports 3-5 days/week)
-              </option>
-              <option value="active">
-                Active (hard exercise/sports 6-7 days a week)
-              </option>
-              <option value="veryActive">
-                Very active (very hard exercise/sports & physical job)
-              </option>
-            </select>
-            <button type="submit">Calculate TDEE</button>
-          </form>
+      <h1 className="text-center text-4xl m-8">Macros</h1>
 
-          {tdee && (
-            <div>
-              <h2>Your TDEE is: {tdee.toFixed(2)} calories/day</h2>
-            </div>
-          )}
-
-          {tdee && (
-            <>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  calculateMacros();
-                }}
-              >
-                <label htmlFor="proteinPreference">Protein Preference:</label>
-                <select
-                  id="proteinPreference"
-                  name="proteinPreference"
-                  value={proteinPreference}
-                  onChange={(e) => setProteinPreference(e.target.value)}
-                  required
-                >
-                  <option value="">Select</option>
-                  <option value="low">Low (1.2g per kg)</option>
-                  <option value="moderate">Moderate (1.6g per kg)</option>
-                  <option value="high">High (2.2g per kg)</option>
-                </select>
-                <label htmlFor="carbFatPreference">Carb/Fat Preference:</label>
-                <select
-                  id="carbFatPreference"
-                  name="carbFatPreference"
-                  value={carbFatPreference}
-                  onChange={(e) => setCarbFatPreference(e.target.value)}
-                  required
-                >
-                  <option value="">Select</option>
-                  <option value="lowCarb">Low Carb / High Fat</option>
-                  <option value="highCarb">High Carb / Moderate Fat</option>
-                </select>
-                <button type="submit">Calculate Macros</button>
-              </form>
-              {macros && (
-                <div>
-                  <h2>Your Macros:</h2>
-                  <ul>
-                    <li>Protein: {macros.protein}g</li>
-                    <li>Fat: {macros.fat}g</li>
-                    <li>Carbohydrates: {macros.carbs}g</li>
-                  </ul>
-                </div>
-              )}
-            </>
-          )}
-        </>
+      {isLoading ? (
+        <div>Loading...</div>
       ) : (
-        <>
-          {isLoading ? (
-            <div>Loading...</div>
-          ) : (
-            macros && (
-              <>
-                <h2>Macros for Today</h2>
-                <CaloriesLeft
-                  caloriesConsumed={consumedMacros.calories}
-                  caloriesTotal={parseFloat(macros.calories)}
-                />
-                <ProteinLeft
-                  proteinConsumed={consumedMacros.protein}
-                  proteinTotal={parseFloat(macros.protein)}
-                />
-                <FatLeft
-                  fatConsumed={consumedMacros.fat}
-                  fatTotal={parseFloat(macros.fat)}
-                />
-                <CarbsLeft
-                  carbsConsumed={consumedMacros.carbs}
-                  carbsTotal={parseFloat(macros.carbs)}
-                />
-              </>
-            )
-          )}
-        </>
+        macros && (
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4 mt-8 mb-8">
+            <div className="p-2 text-center">
+              Calories
+              <CaloriesLeft
+                caloriesConsumed={consumedMacros.calories}
+                caloriesTotal={parseFloat(macros.calories)}
+              />
+            </div>
+            <div className="p-2 text-center">
+              Protein
+              <ProteinLeft
+                proteinConsumed={consumedMacros.protein}
+                proteinTotal={parseFloat(macros.protein)}
+              />
+            </div>
+            <div className="p-2 text-center">
+              Fat
+              <FatLeft
+                fatConsumed={consumedMacros.fat}
+                fatTotal={parseFloat(macros.fat)}
+              />
+            </div>
+            <div className="p-2 text-center">
+              Carbohydrates
+              <CarbsLeft
+                carbsConsumed={consumedMacros.carbs}
+                carbsTotal={parseFloat(macros.carbs)}
+              />
+            </div>
+          </div>
+        )
       )}
+
+      <div className="grid place-content-center">
+        <span className="text-center m-8">
+          Your TDEE is calculated using the Mifflin-St Jeor Equation
+        </span>
+        <form onSubmit={handleSubmit} className="grid gap-4 p-8">
+          <label htmlFor="sex">Sex:</label>
+          <select
+            id="sex"
+            name="sex"
+            value={sex}
+            onChange={(e) => setSex(e.target.value)}
+            className="text-black p-2 rounded-xl"
+          >
+            <option value="">Select</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+          <label htmlFor="age">Age:</label>
+          <input
+            type="number"
+            id="age"
+            name="age"
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+            min={18}
+            required
+            className="text-black p-2 rounded-xl"
+          />
+          <label htmlFor="weight">Weight (kg):</label>
+          <input
+            type="number"
+            id="weight"
+            name="weight"
+            value={weight}
+            onChange={(e) => setWeight(e.target.value)}
+            min={0}
+            required
+            className="text-black p-2 rounded-xl"
+          />
+          <label htmlFor="height">Height (cm):</label>
+          <input
+            type="number"
+            id="height"
+            name="height"
+            value={height}
+            onChange={(e) => setHeight(e.target.value)}
+            min={0}
+            required
+            className="text-black p-2 rounded-xl"
+          />
+          <label htmlFor="activityLevel">Activity Level:</label>
+          <select
+            id="activityLevel"
+            name="activityLevel"
+            value={activityLevel}
+            onChange={(e) => setActivityLevel(e.target.value)}
+            required
+            className="text-black p-2 rounded-xl"
+          >
+            <option value="sedentary">Sedentary (little to no exercise)</option>
+            <option value="light">
+              Lightly active (light exercise/sports 1-3 days/week)
+            </option>
+            <option value="moderate">
+              Moderately active (moderate exercise/sports 3-5 days/week)
+            </option>
+            <option value="active">
+              Active (hard exercise/sports 6-7 days a week)
+            </option>
+            <option value="veryActive">
+              Very active (very hard exercise/sports & physical job)
+            </option>
+          </select>
+          <button
+            type="submit"
+            className="justify-self-center border-orange-400 border-2 p-2 rounded-xl w-52 hover:bg-orange-400 transition duration-300 ease-out"
+          >
+            Calculate TDEE
+          </button>
+        </form>
+
+        {tdee && (
+          <div>
+            <h2 className="text-center m-8">
+              Your TDEE is: {tdee.toFixed(2)} calories/day
+            </h2>
+          </div>
+        )}
+
+        {tdee && (
+          <>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                calculateMacros();
+              }}
+              className="grid gap-4 p-8"
+            >
+              <label htmlFor="proteinPreference">Protein Preference:</label>
+              <select
+                id="proteinPreference"
+                name="proteinPreference"
+                value={proteinPreference}
+                onChange={(e) => setProteinPreference(e.target.value)}
+                required
+                className="text-black p-2 rounded-xl"
+              >
+                <option value="">Select</option>
+                <option value="low">Low (1.2g per kg)</option>
+                <option value="moderate">Moderate (1.6g per kg)</option>
+                <option value="high">High (2.2g per kg)</option>
+              </select>
+              <label htmlFor="carbFatPreference">Carb/Fat Preference:</label>
+              <select
+                id="carbFatPreference"
+                name="carbFatPreference"
+                value={carbFatPreference}
+                onChange={(e) => setCarbFatPreference(e.target.value)}
+                required
+                className="text-black p-2 rounded-xl"
+              >
+                <option value="">Select</option>
+                <option value="lowCarb">Low Carb / High Fat</option>
+                <option value="highCarb">High Carb / Moderate Fat</option>
+              </select>
+              <button
+                type="submit"
+                className="justify-self-center border-orange-400 border-2 p-2 rounded-xl w-52 hover:bg-orange-400 transition duration-300 ease-out"
+              >
+                Calculate Macros
+              </button>
+            </form>
+            {macros && (
+              <div className="text-center">
+                <h2 className="text-2xl mb-3">Your Macros</h2>
+                <ul>
+                  <li>Protein: {Math.round(macros.protein)}g</li>
+                  <li>Fat: {Math.round(macros.fat)}g</li>
+                  <li>Carbs: {Math.round(macros.carbs)}g</li>
+                </ul>
+              </div>
+            )}
+          </>
+        )}
+
+        <h4 className="text-2xl text-center mt-56">Disclaimer</h4>
+        <p className="w-[50ch] text-[.85rem] justify-self-center p-4 mb-8">
+          The Mifflin-St Jeor equation is a widely used method to estimate daily
+          calorie needs, but it is just that—an estimate. Individual factors
+          such as metabolism, activity level, and overall health can
+          significantly influence your actual calorie requirements. This
+          equation should not be taken as a definitive calculation. Before
+          making any changes to your diet or embarking on a new health regimen,
+          it's essential to consult with a medical professional to ensure that
+          any adjustments are safe and appropriate for your specific needs.
+        </p>
+      </div>
     </>
   );
 }

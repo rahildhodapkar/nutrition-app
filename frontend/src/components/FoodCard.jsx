@@ -92,19 +92,25 @@ export default function FoodCard({
   return (
     <>
       <div className="backdrop absolute top-0 left-0 right-0 bottom-0 m-auto w-full h-full bg-black opacity-50 z-40"></div>
-      <div className="dialog absolute top-0 left-0 right-0 bottom-0 m-auto p-10 w-96 h-96 z-50 bg-slate-700 text-white">
-        <form onSubmit={handleSubmit} className="flex flex-col">
-          <span>{title}</span>
-          <ul>
-            <li>Calories: {nutrients.calories}kcal</li>
-            <li>Protein: {nutrients.protein}g</li>
-            <li>Fat: {nutrients.fat}g</li>
-            <li>Carbohydrates (net): {nutrients.carbs}g</li>
+      <div className="dialog fixed top-0 left-0 right-0 bottom-0 m-auto p-10 w-80 sm:w-96 md:w-1/2 z-50 backdrop-blur-sm h-fit bg-zinc-300/30 rounded-xl text-white flex justify-center">
+        <button
+          className="absolute top-4 right-4 text-white text-xl font-bold hover:text-orange-400 transition duration-300 ease-out"
+          onClick={onClose}
+        >
+          &times;
+        </button>
+        <form onSubmit={handleSubmit} className="flex flex-col xl:w-1/2">
+          <h2 className="text-center text-2xl">{title}</h2>
+          <ul className="mt-4 mb-4">
+            <li>Calories: {Math.round(nutrients.calories)}kcal</li>
+            <li>Protein: {Math.round(nutrients.protein)}g</li>
+            <li>Fat: {Math.round(nutrients.fat)}g</li>
+            <li>Carbohydrates (net): {Math.round(nutrients.carbs)}g</li>
           </ul>
-          <label htmlFor="g">
+          <label htmlFor="g" className="flex flex-col">
             Grams:
             <input
-              className="text-black"
+              className="text-black rounded-xl p-2"
               type="number"
               min={0}
               name="g"
@@ -113,10 +119,10 @@ export default function FoodCard({
               onChange={handleChange}
             />
           </label>
-          <label htmlFor="oz">
+          <label htmlFor="oz" className="mt-2 flex flex-col">
             Ounces:
             <input
-              className="text-black"
+              className="text-black rounded-xl p-2"
               type="number"
               min={0}
               name="oz"
@@ -125,18 +131,18 @@ export default function FoodCard({
               onChange={handleChange}
             />
           </label>
-          <label htmlFor="date">
+          <label htmlFor="date" className="mt-2 flex flex-col">
             When did you eat this?
             <input
               type="date"
               name="date"
               id="date"
-              className="text-black"
+              className="text-black rounded-xl p-2"
               onChange={handleChangeDate}
               value={date.toISOString().split("T")[0]} 
             />
           </label>
-          <button type="submit">Add to log</button>
+          <button type="submit" className=" mt-4 border-orange-400 border-2 p-2 w-full rounded-lg hover:bg-orange-400 transition duration-300 ease-out">Add to log</button>
         </form>
         {unsuccessfulSubmission && (
           <span>Error on submission, please try again later.</span>

@@ -91,25 +91,25 @@ export default function UserAuth({ onLoginSuccess }) {
       <div className="z-10 auth-container m-4 backdrop-blur-lg bg-zinc-300/30 rounded-xl sm:w-1/2 lg:w-1/4">
         {hasAccount ? (
           <form onSubmit={handleLogin} className="grid gap-3 p-10 place-items-center">
-            <label className="grid place-items-center" htmlFor="username">
+            <label className="grid place-items-center w-full" htmlFor="username">
               Username
               <input
                 type="text"
                 name="username"
                 id="username"
                 onChange={handleChange}
-                className="rounded-lg p-2"
+                className="rounded-lg p-2 w-full text-black"
                 required
               />
             </label>
-            <label className="grid place-items-center" htmlFor="password">
+            <label className="grid place-items-center w-full" htmlFor="password">
               Password
               <input
                 type="password"
                 name="password"
                 id="password"
                 onChange={handleChange}
-                className="rounded-lg p-2"
+                className="rounded-lg p-2 w-full text-black"
                 required
               />
             </label>
@@ -121,36 +121,36 @@ export default function UserAuth({ onLoginSuccess }) {
           </form>
         ) : (
           <form onSubmit={handleRegister} className="grid gap-3 p-10">
-            <label className="grid place-items-center" htmlFor="newUsername">
+            <label className="grid place-items-center w-full" htmlFor="newUsername">
               Username
               <input
                 type="text"
                 name="username"
                 id="newUsername"
                 onChange={handleChange}
-                className="rounded-lg p-2"
+                className="rounded-lg p-2 w-full text-black"
                 required
               />
             </label>
-            <label className="grid place-items-center" htmlFor="newPassword">
+            <label className="grid place-items-center w-full" htmlFor="newPassword">
               Password
               <input
                 type="password"
                 name="password"
                 id="newPassword"
                 onChange={handleChange}
-                className="rounded-lg p-2"
+                className="rounded-lg p-2 w-full text-black"
                 required
               />
             </label>
-            <label className="grid place-items-center" htmlFor="confirmNewPassword">
+            <label className="grid place-items-center w-full" htmlFor="confirmNewPassword">
               Confirm Password
               <input
                 type="password"
                 name="confirmPassword"
                 id="confirmNewPassword"
                 onChange={handleChange}
-                className="rounded-lg p-2"
+                className="rounded-lg p-2 w-full text-black"
                 required
               />
             </label>

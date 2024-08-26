@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CaloriesOverTime, WeightOverTime } from "./Graphs";  
+import { CaloriesOverTime, WeightOverTime } from "./Graphs";
 
 export default function Home({ username }) {
   const [weight, setWeight] = useState("");
@@ -18,7 +18,8 @@ export default function Home({ username }) {
     setIsLoadingWeights(true);
     try {
       const response = await fetch(
-        `http://localhost:8081/stats/getWeights?username=${username}`, {credentials: "include"}
+        `http://localhost:8081/stats/getWeights?username=${username}`,
+        { credentials: "include" }
       );
       const result = await response.json();
       if (response.ok && Array.isArray(result)) {
@@ -41,7 +42,8 @@ export default function Home({ username }) {
     setIsLoadingCalories(true);
     try {
       const response = await fetch(
-        `http://localhost:8081/usda/getAllFoods?username=${username}`, {credentials: "include"}
+        `http://localhost:8081/usda/getAllFoods?username=${username}`,
+        { credentials: "include" }
       );
       const result = await response.json();
       if (response.ok && Array.isArray(result)) {
@@ -55,7 +57,10 @@ export default function Home({ username }) {
         }, {});
 
         const calorieStats = new Map(
-          Object.entries(groupedCalories).map(([date, calories]) => [new Date(date), calories])
+          Object.entries(groupedCalories).map(([date, calories]) => [
+            new Date(date),
+            calories,
+          ])
         );
 
         setCalories(calorieStats);
@@ -87,7 +92,7 @@ export default function Home({ username }) {
 
       if (response.ok) {
         setMessage("Weight added successfully.");
-        fetchWeights(); 
+        fetchWeights();
       } else {
         setMessage("Error adding weight. Please try again.");
       }
@@ -98,44 +103,52 @@ export default function Home({ username }) {
   };
 
   return (
-    <div>
-      <h1>Home</h1>
+    <div className="grid place-items-center p-7">
+      <h1 className="text-center text-4xl mt-8">Home</h1>
+      <span className="m-4">Welcome back, {username}!</span>
 
-      <div>
-        <h2>Add a New Weight</h2>
-        <form onSubmit={handleWeightSubmit}>
+      <div className="flex flex-col lg:flex-row lg:gap-10 w-full">
+        <div className="flex-1 grid place-items-center">
+          <h2 className="text-center p-3 text-2xl">Calories Over Time</h2>
+          {isLoadingCalories ? (
+            <p>Loading...</p>
+          ) : calories ? (
+            <CaloriesOverTime stats={calories} />
+          ) : (
+            <p>No calorie data available.</p>
+          )}
+        </div>
+        <div className="flex-1 grid place-items-center">
+          <h2 className="text-center p-3 text-2xl">Weight Over Time</h2>
+          {isLoadingWeights ? (
+            <p>Loading...</p>
+          ) : weights ? (
+            <WeightOverTime stats={weights} />
+          ) : (
+            <p>No weight data available.</p>
+          )}
+        </div>
+      </div>
+
+      <div className="grid place-items-center mt-10 w-1/2 lg:w-96">
+        <h2 className="text-center p-3 text-2xl">Add a New Bodyweight</h2>
+        <form onSubmit={handleWeightSubmit} className="grid place-items-center gap-3 w-full">
           <input
             type="number"
             placeholder="Enter weight in kg"
             value={weight}
             onChange={(e) => setWeight(e.target.value)}
+            className="rounded-xl p-2 text-black w-full"
             required
           />
-          <button type="submit">Add Weight</button>
+          <button
+            type="submit"
+            className="border-orange-400 border-2 p-2 rounded-xl w-28 hover:bg-orange-400 transition duration-300 ease-out"
+          >
+            Add Weight
+          </button>
         </form>
-        {message && <p>{message}</p>}
-      </div>
-
-      <div>
-        <h2>Calories Over Time</h2>
-        {isLoadingCalories ? (
-          <p>Loading...</p>
-        ) : calories ? (
-          <CaloriesOverTime stats={calories} />
-        ) : (
-          <p>No calorie data available.</p>
-        )}
-      </div>
-
-      <div>
-        <h2>Weight Over Time</h2>
-        {isLoadingWeights ? (
-          <p>Loading...</p>
-        ) : weights ? (
-          <WeightOverTime stats={weights} />
-        ) : (
-          <p>No weight data available.</p>
-        )}
+        {message && <p style={{ fontSize: ".7rem" }} className="pt-4">{message}</p>}
       </div>
     </div>
   );

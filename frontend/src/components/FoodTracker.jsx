@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import useDebounce from "../hooks/useDebounce";
 import FoodCard from "./FoodCard";
-import { CaloriesLeft, ProteinLeft, FatLeft, CarbsLeft } from "./Graphs"; // Import the charts
+import { CaloriesLeft, ProteinLeft, FatLeft, CarbsLeft } from "./Graphs";
 
 export default function FoodTracker({ username }) {
   const [query, setQuery] = useState("");
@@ -37,7 +37,7 @@ export default function FoodTracker({ username }) {
 
       try {
         const response = await fetch(url, {
-          credentials: "include"
+          credentials: "include",
         });
         const result = await response.json();
 
@@ -49,7 +49,7 @@ export default function FoodTracker({ username }) {
       } catch (err) {
         setFoods("Nothing to see here");
       }
-    }, 300),
+    }, 150),
     []
   );
 
@@ -68,9 +68,10 @@ export default function FoodTracker({ username }) {
           new URLSearchParams({
             username: username,
             createdAt: date.toISOString(),
-          }), {
-            credentials: "include"
-          }
+          }),
+        {
+          credentials: "include",
+        }
       );
       const result = await response.json();
 
@@ -107,8 +108,9 @@ export default function FoodTracker({ username }) {
   const fetchTotalMacros = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8081/stats/getMacros?username=${username}`
-      , {credentials: "include"});
+        `http://localhost:8081/stats/getMacros?username=${username}`,
+        { credentials: "include" }
+      );
       const result = await response.json();
 
       if (response.ok && result) {
@@ -164,71 +166,108 @@ export default function FoodTracker({ username }) {
 
   return (
     <>
-      <div className="food-buttons">
-        <button onClick={() => handleNavClick("log")}>Food Log</button>
-        <button onClick={() => handleNavClick("add")}>Add a Food</button>
+      <h1 className="text-center text-4xl mt-8">Food</h1>
+
+      <div className="food-buttons flex justify-center gap-4 mt-8 mb-8">
+        <button
+          className="border-orange-400 border-2 p-2 rounded-xl w-28 hover:bg-orange-400 transition duration-300 ease-out"
+          onClick={() => handleNavClick("log")}
+        >
+          Food Log
+        </button>
+        <button
+          className="border-orange-400 border-2 p-2 rounded-xl w-28 hover:bg-orange-400 transition duration-300 ease-out"
+          onClick={() => handleNavClick("add")}
+        >
+          Add a Food
+        </button>
       </div>
       {displayLogOrAdd === 1 ? (
         <div className="food-track-container">
-          <label htmlFor="food-log-date">
+          <label htmlFor="food-log-date" className="flex justify-center">
             <input
               type="date"
               name="food-log-date"
               id="food-log-date"
               onChange={handleDateChange}
+              className="text-black rounded-xl p-2"
               value={foodLogDate.toISOString().split("T")[0]}
             />
           </label>
+          {!isLoading && typeof foodLog !== "string" && (
+            <div className="macro-charts grid grid-cols-2 gap-4 md:grid-cols-4 mt-8">
+              <div>
+                <h3 className="text-center">Calories</h3>
+                <CaloriesLeft
+                  caloriesConsumed={consumedMacros.calories}
+                  caloriesTotal={totalMacros.calories}
+                />
+              </div>
+              <div>
+                <h3 className="text-center">Protein</h3>
+                <ProteinLeft
+                  proteinConsumed={consumedMacros.protein}
+                  proteinTotal={totalMacros.protein}
+                />
+              </div>
+              <div>
+                <h3 className="text-center">Fat</h3>
+                <FatLeft
+                  fatConsumed={consumedMacros.fat}
+                  fatTotal={totalMacros.fat}
+                />
+              </div>
+              <div>
+                <h3 className="text-center">Carbohydrates</h3>
+                <CarbsLeft
+                  carbsConsumed={consumedMacros.carbs}
+                  carbsTotal={totalMacros.carbs}
+                />
+              </div>
+            </div>
+          )}
           {typeof foodLog === "string" ? (
-            <p>{foodLog}</p>
+            <p className="text-center mt-8">{foodLog}</p>
           ) : (
-            <ul>
+            <ul className="grid place-content-center gap-1 mt-8 mb-16 w-full">
               {foodLog.map((food) => (
-                <li key={food.id}>{food.description}</li>
+                <li
+                  key={food.id}
+                  className="odd:bg-gray-900 p-2 rounded-xl w-[300px] md:w-[600px] lg:w-[800px] xl:w-[1200px]"
+                >
+                  {food.description}
+                </li>
               ))}
             </ul>
-          )}
-          {!isLoading && typeof foodLog !== "string" && (
-            <div className="macro-charts">
-              <CaloriesLeft
-                caloriesConsumed={consumedMacros.calories}
-                caloriesTotal={totalMacros.calories}
-              />
-              <ProteinLeft
-                proteinConsumed={consumedMacros.protein}
-                proteinTotal={totalMacros.protein}
-              />
-              <FatLeft
-                fatConsumed={consumedMacros.fat}
-                fatTotal={totalMacros.fat}
-              />
-              <CarbsLeft
-                carbsConsumed={consumedMacros.carbs}
-                carbsTotal={totalMacros.carbs}
-              />
-            </div>
           )}
         </div>
       ) : (
         <div className="food-search-container">
-          <label htmlFor="search">
+          <label htmlFor="search" className="flex justify-center">
             <input
               id="search"
               name="search"
               type="text"
               placeholder="Search..."
               value={query}
+              className="text-black rounded-xl p-2"
               onChange={handleChange}
             />
           </label>
-          <div>
+          <div className="flex justify-center">
             {typeof foods === "string" ? (
-              <p>{foods}</p>
+              <p className="text-center mt-8">{foods}</p>
             ) : (
-              <ul>
+              <ul className="p-8 sm:p-16 md:pl-32 md:pr-32 w-full">
                 {foods.map((food, index) => (
-                  <li key={index}>
-                    <button onClick={() => handleClick(food)}>
+                  <li
+                    key={index}
+                    className="odd:bg-gray-900 p-2 rounded-xl hover:bg-orange-400 transition duration-100 ease-out"
+                  >
+                    <button
+                      className="text-left"
+                      onClick={() => handleClick(food)}
+                    >
                       {food.brandName
                         ? food.description + ` by ${food.brandName}`
                         : food.description}

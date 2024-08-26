@@ -58,62 +58,65 @@ export default function Recipes() {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="ingredients">
-          <span>What do you want to eat?</span>
-          <p>For example: honey miso salmon</p>
-          <input
-            type="text"
-            id="ingredients"
-            name="ingredients"
-            onChange={handleChange}
-          />
-        </label>
-
-        <label htmlFor="calories">
-          <span>
-            Maximum number of calories (kcal) you want in each serving
-          </span>
-          <input
-            type="range"
-            min={0}
-            max={2000}
-            id="calories"
-            name="calories"
-            onChange={handleChange}
-          />
-        </label>
-
-        <button type="submit">Submit</button>
-      </form>
+      <h1 className="text-center text-4xl mt-8">What do you want to eat?</h1>
+      <div className="flex justify-center">
+        <form onSubmit={handleSubmit} className="w-full lg:w-1/2 p-8 grid place-items-center gap-4">
+          <label htmlFor="ingredients" className="flex flex-col w-3/5">
+            Recipe:
+            <input
+              className="rounded-xl p-2 text-black"
+              type="text"
+              id="ingredients"
+              name="ingredients"
+              placeholder="Search..."
+              onChange={handleChange}
+            />
+          </label>
+          <label htmlFor="calories" className="flex flex-col w-3/5">
+            Maximum calories (kcal) per serving
+            <input
+              type="range"
+              min={0}
+              max={2000}
+              id="calories"
+              name="calories"
+              onChange={handleChange}
+            />
+          </label>
+          <button type="submit" className="border-orange-400 border-2 p-2 w-32 rounded-lg hover:bg-orange-400 transition duration-300 ease-out">Submit</button>
+        </form>
+      </div>
       <div className="recipes-container">
         {typeof recipesToShow === "string" ? (
           <p>{recipesToShow}</p>
         ) : (
-          <ul>
-            {recipesToShow.map((hit, index) => {
-              const recipe = hit.recipe;
-              if (recipe) {
-                const params = {
-                  label: recipe.label,
-                  source: recipe.source,
-                  url: recipe.url,
-                  image: recipe.image,
-                  servings: recipe.yield,
-                  calories: recipe.calories,
-                  protein: recipe.totalNutrients.PROCNT.quantity,
-                  fat: recipe.totalNutrients.FAT.quantity,
-                  carbs: recipe.totalNutrients.CHOCDF.quantity,
-                };
-                return (
-                  <li key={index}>
-                    <RecipeCard {...params} />
-                  </li>
-                );
-              }
-              return null;
-            })}
-          </ul>
+          <div>
+            <h3 className="text-center text-3xl">Results</h3>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-8 gap-4">
+              {recipesToShow.map((hit, index) => {
+                const recipe = hit.recipe;
+                if (recipe) {
+                  const params = {
+                    label: recipe.label,
+                    source: recipe.source,
+                    url: recipe.url,
+                    image: recipe.image,
+                    servings: recipe.yield,
+                    calories: Math.round(recipe.calories),
+                    protein: Math.round(recipe.totalNutrients.PROCNT.quantity),
+                    fat: Math.round(recipe.totalNutrients.FAT.quantity),
+                    carbs: Math.round(recipe.totalNutrients.CHOCDF.quantity),
+                  };
+                  return (
+                    <div key={index}>
+                      <RecipeCard {...params} />
+                    </div>
+                  );
+                }
+                return null;
+              })}
+            </div>
+          </div>
         )}
       </div>
     </>

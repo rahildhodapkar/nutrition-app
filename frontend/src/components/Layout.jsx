@@ -6,17 +6,19 @@ import Recipes from "./Recipes";
 import Sidebar from "./Sidebar";
 
 export default function Layout({ username }) {
-  const [componentToRender, setComponentToRender] = useState(<Home username={username}/>);
+  const [componentToRender, setComponentToRender] = useState(
+    <Home username={username} />
+  );
 
   const handleWhichComponent = (e) => {
     const id = e.target.id;
     let cmpnt;
     if (id === "0") {
-      cmpnt = <Home username={username}/>;
+      cmpnt = <Home username={username} />;
     } else if (id === "1") {
       cmpnt = <FoodTracker username={username} />;
     } else if (id === "2") {
-      cmpnt = <MacroTracker username={username}/>;
+      cmpnt = <MacroTracker username={username} />;
     } else {
       cmpnt = <Recipes />;
     }
@@ -24,9 +26,12 @@ export default function Layout({ username }) {
   };
 
   return (
-    <div className="layout-container">
-      <Sidebar setComponent={handleWhichComponent}/> 
-      <main>{componentToRender}</main>
+    <div className="layout-container flex h-full">
+      <button className="absolute top-4 left-4 text-2xl font-bold" onClick={() => {
+        setComponentToRender(<Home username={username} />)
+      }}>Nutron</button>
+      <Sidebar setComponent={handleWhichComponent} />
+      <main className="flex-1">{componentToRender}</main>
     </div>
   );
 }

@@ -140,6 +140,8 @@ export function CaloriesLeft({ caloriesConsumed, caloriesTotal }) {
         data: [caloriesConsumed, Math.max(0, caloriesTotal - caloriesConsumed)],
         backgroundColor: ['#FF6384', '#36A2EB'],
         hoverBackgroundColor: ['#FF6384', '#36A2EB'],
+        borderWidth: 0,
+        hoverBorderWidth: 0, 
       },
     ],
   };
@@ -150,11 +152,11 @@ export function CaloriesLeft({ caloriesConsumed, caloriesTotal }) {
       datalabels: {
         color: '#fff',
         font: {
-          size: 16,
+          size: 20,
           weight: 'bold',
         },
-        formatter: function (value, context) {
-          return value + (context.dataIndex === 0 ? ' consumed' : ' left');
+        formatter: function (value) {
+          return Math.round(value) + 'g';
         },
       },
       tooltip: {
@@ -170,6 +172,7 @@ export function CaloriesLeft({ caloriesConsumed, caloriesTotal }) {
   return <Doughnut data={data} options={options} />;
 }
 
+
 export function ProteinLeft({ proteinConsumed, proteinTotal }) {
   const data = {
     labels: ['Protein Consumed', 'Protein Left'],
@@ -178,6 +181,8 @@ export function ProteinLeft({ proteinConsumed, proteinTotal }) {
         data: [proteinConsumed, Math.max(0, proteinTotal - proteinConsumed)],
         backgroundColor: ['#FFCE56', '#FF6384'],
         hoverBackgroundColor: ['#FFCE56', '#FF6384'],
+        borderWidth: 0,
+        hoverBorderWidth: 0, 
       },
     ],
   };
@@ -188,11 +193,11 @@ export function ProteinLeft({ proteinConsumed, proteinTotal }) {
       datalabels: {
         color: '#fff',
         font: {
-          size: 16,
+          size: 20,
           weight: 'bold',
         },
         formatter: function (value, context) {
-          return value + 'g';
+          return Math.round(value) + 'g';
         },
       },
       tooltip: {
@@ -216,6 +221,8 @@ export function FatLeft({ fatConsumed, fatTotal }) {
         data: [fatConsumed, Math.max(0, fatTotal - fatConsumed)],
         backgroundColor: ['#4BC0C0', '#FFCE56'],
         hoverBackgroundColor: ['#4BC0C0', '#FFCE56'],
+        borderWidth: 0,
+        hoverBorderWidth: 0, 
       },
     ],
   };
@@ -226,11 +233,11 @@ export function FatLeft({ fatConsumed, fatTotal }) {
       datalabels: {
         color: '#fff',
         font: {
-          size: 16,
+          size: 20,
           weight: 'bold',
         },
         formatter: function (value, context) {
-          return value + 'g';
+          return Math.round(value) + 'g';
         },
       },
       tooltip: {
@@ -254,6 +261,8 @@ export function CarbsLeft({ carbsConsumed, carbsTotal }) {
         data: [carbsConsumed, Math.max(0, carbsTotal - carbsConsumed)],
         backgroundColor: ['#36A2EB', '#4BC0C0'],
         hoverBackgroundColor: ['#36A2EB', '#4BC0C0'],
+        borderWidth: 0,
+        hoverBorderWidth: 0, 
       },
     ],
   };
@@ -264,11 +273,11 @@ export function CarbsLeft({ carbsConsumed, carbsTotal }) {
       datalabels: {
         color: '#fff',
         font: {
-          size: 16,
+          size: 20,
           weight: 'bold',
         },
         formatter: function (value, context) {
-          return value + 'g';
+          return Math.round(value) + 'g';
         },
       },
       tooltip: {
