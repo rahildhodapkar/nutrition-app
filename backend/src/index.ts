@@ -37,13 +37,14 @@ app.use(
   session({
     store: new pgSessionStore({
       conString: process.env.DATABASE_URL,
+      createTableIfMissing: true, 
     }),
     secret: process.env.SECRET_SESSION as string,
     resave: false,
     saveUninitialized: false,
     cookie: {
       secure: process.env.NODE_ENV === "production",
-      maxAge: 1000 * 60 * 60 * 24,
+      maxAge: 1000 * 60 * 60 * 24, 
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       httpOnly: true,
     },
@@ -64,23 +65,27 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
-    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
 
 app.use(express.json());
+
 app.use(passport.initialize());
 app.use(passport.session());
 
 app.use("/", authRouter);
-
 app.use("/", isAuthenticated, edamamRouter);
 app.use("/", isAuthenticated, usdaRouter);
 app.use("/", isAuthenticated, statsRouter);
 
 app.get("/auth/check", isAuthenticated, (req: Request, res: Response) => {
   res.status(200).json({ user: req.user });
+});
+
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error(err.stack);
+  res.status(500).json({ message: "Internal Server Error" });
 });
 
 const PORT = process.env.PORT || 3000;
