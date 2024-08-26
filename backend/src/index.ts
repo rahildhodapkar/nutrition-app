@@ -9,7 +9,9 @@ import edamamRouter from "./routes/edamam";
 import statsRouter from "./routes/stats";
 import usdaRouter from "./routes/usda";
 
-console.log(process.env.NODE_ENV)
+dotenv.config();  
+
+console.log('NODE_ENV:', process.env.NODE_ENV);
 
 declare global {
   namespace Express {
@@ -23,7 +25,6 @@ declare global {
   }
 }
 
-dotenv.config();
 const app = express();
 
 function isAuthenticated(req: Request, res: Response, next: NextFunction) {
@@ -35,25 +36,28 @@ function isAuthenticated(req: Request, res: Response, next: NextFunction) {
 
 const pgSessionStore = pgSession(session);
 
-console.log(process.env.NODE_ENV)
-
 app.use(
   session({
     store: new pgSessionStore({
       conString: process.env.DATABASE_URL,
-      createTableIfMissing: true, 
+      createTableIfMissing: true,
     }),
     secret: process.env.SECRET_SESSION as string,
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 1000 * 60 * 60 * 24, 
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", 
+      maxAge: 1000 * 60 * 60 * 24,  
+      sameSite: "none",  
+      httpOnly: true,  
     },
   })
 );
+
+app.use((req, res, next) => {
+  console.log('Session:', req.session);
+  next();
+});
 
 const allowedOrigins = [
   "https://nutrition-app-49a16.web.app",
