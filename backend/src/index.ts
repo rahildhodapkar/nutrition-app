@@ -17,7 +17,7 @@ declare global {
   }
 
   interface AuthenticatedRequest extends Request {
-    user: any; 
+    user: any;
   }
 }
 
@@ -36,23 +36,34 @@ const pgSessionStore = pgSession(session);
 app.use(
   session({
     store: new pgSessionStore({
-      conString: process.env.DATABASE_URL, 
+      conString: process.env.DATABASE_URL,
     }),
-    secret: process.env.SECRET_SESSION as string, 
+    secret: process.env.SECRET_SESSION as string,
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === "production", 
-      maxAge: 1000 * 60 * 60 * 24, 
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 1000 * 60 * 60 * 24,
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       httpOnly: true,
     },
   })
 );
 
+const allowedOrigins = [
+  "https://nutrition-app-49a16.web.app",
+  "http://localhost:5173",
+];
+
 app.use(
   cors({
-    origin: process.env.NODE_ENV === "production" ? "https://nutrition-app-49a16.web.app" : "http://localhost:5173",
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
@@ -68,8 +79,8 @@ app.use("/", isAuthenticated, edamamRouter);
 app.use("/", isAuthenticated, usdaRouter);
 app.use("/", isAuthenticated, statsRouter);
 
-app.get('/auth/check', isAuthenticated, (req: Request, res: Response) => {
-  res.status(200).json({ user: req.user }); 
+app.get("/auth/check", isAuthenticated, (req: Request, res: Response) => {
+  res.status(200).json({ user: req.user });
 });
 
 const PORT = process.env.PORT || 3000;
