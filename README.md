@@ -123,5 +123,11 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - All open-source libraries and tools that made this project possible
 
 ---
+## Todo
+- Frontend testing
+- Swagger API documentation
+- Better accessibility
+- Docker
+---
 
-*Developed with ❤️ by [Your Name]*
+*Developed by Rahil Dhodapkar*
