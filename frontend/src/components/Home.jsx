@@ -213,6 +213,46 @@ export default function Home({ username }) {
         </div>
       )}
 
+      {/* Quick actions */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <button 
+          onClick={() => document.getElementById("weight-form").scrollIntoView({ behavior: 'smooth' })}
+          className="bg-gray-800 hover:bg-orange-500 transition-colors duration-300 p-4 rounded-xl flex flex-col items-center justify-center"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+          <span>Add Weight</span>
+        </button>
+        <button 
+          onClick={() => window.location.href = "#/food"}
+          className="bg-gray-800 hover:bg-orange-500 transition-colors duration-300 p-4 rounded-xl flex flex-col items-center justify-center"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          <span>Log Food</span>
+        </button>
+        <button 
+          onClick={() => window.location.href = "#/macros"}
+          className="bg-gray-800 hover:bg-orange-500 transition-colors duration-300 p-4 rounded-xl flex flex-col items-center justify-center"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          <span>Set Macros</span>
+        </button>
+        <button 
+          onClick={() => window.location.href = "#/recipes"}
+          className="bg-gray-800 hover:bg-orange-500 transition-colors duration-300 p-4 rounded-xl flex flex-col items-center justify-center"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z" />
+          </svg>
+          <span>Find Recipes</span>
+        </button>
+      </div>
+
       {/* Data visualization section */}
       <div className="flex flex-col lg:flex-row lg:gap-10 w-full mb-12">
         <div className="flex-1 bg-gray-800 p-6 rounded-xl shadow-lg mb-6 lg:mb-0">
@@ -242,4 +282,4 @@ export default function Home({ username }) {
           ) : (
             <div className="text-center py-16 text-gray-400">
               <p>No weight data available.</p>
-              <p className="mt-2 text-sm">Add your weight
+              <p className="mt-2 text-sm">Add your weight below to start tracking.</p>
