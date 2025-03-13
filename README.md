@@ -1,7 +1,5 @@
 # Nutron - Nutrition Tracking Platform
 
-![Nutron Banner](https://via.placeholder.com/800x200?text=Nutron:+Smart+Nutrition+Tracking)
-
 ## Live Demo
 
 Experience Nutron in action: [Live Demo](https://nutrition-app-49a16.web.app/)
