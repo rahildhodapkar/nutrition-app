@@ -1,6 +1,6 @@
 /**
  * Food Model - Handles data operations for user food entries
- * 
+ *
  * This module provides functions to interact with the food-related data in the database,
  * including retrieving, adding, updating, and deleting food entries.
  */
@@ -9,7 +9,7 @@ import prisma from "../prisma";
 
 /**
  * Retrieves all food entries for a specific user on a given date
- * 
+ *
  * @param username - The username of the user
  * @param date - The date to fetch food entries for
  * @returns Promise resolving to an array of food entries
@@ -19,7 +19,7 @@ export async function getFoodsAtDate(username: string, date: Date) {
   if (!username || !date) {
     throw new Error("Username and date are required");
   }
-  
+
   // Create start and end of day timestamps in UTC to ensure consistency
   const startOfDay = new Date(
     Date.UTC(
@@ -32,7 +32,7 @@ export async function getFoodsAtDate(username: string, date: Date) {
       0
     )
   );
-  
+
   const endOfDay = new Date(
     Date.UTC(
       date.getUTCFullYear(),
@@ -58,7 +58,7 @@ export async function getFoodsAtDate(username: string, date: Date) {
             },
           },
           orderBy: {
-            createdAt: 'asc', // Sort by creation time ascending
+            createdAt: "asc", // Sort by creation time ascending
           },
         },
       },
@@ -66,14 +66,21 @@ export async function getFoodsAtDate(username: string, date: Date) {
 
     return user?.foods || [];
   } catch (error) {
-    console.error(`Error fetching foods for user ${username} on ${date}:`, error);
-    throw new Error(`Failed to retrieve food entries: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.error(
+      `Error fetching foods for user ${username} on ${date}:`,
+      error
+    );
+    throw new Error(
+      `Failed to retrieve food entries: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`
+    );
   }
 }
 
 /**
  * Retrieves all food entries for a specific user
- * 
+ *
  * @param username - The username of the user
  * @returns Promise resolving to an array of all food entries
  */
@@ -88,7 +95,7 @@ export async function getAllFoods(username: string) {
       include: {
         foods: {
           orderBy: {
-            createdAt: 'desc', // Most recent foods first
+            createdAt: "desc", // Most recent foods first
           },
         },
       },
@@ -97,13 +104,17 @@ export async function getAllFoods(username: string) {
     return user?.foods || [];
   } catch (error) {
     console.error(`Error fetching all foods for user ${username}:`, error);
-    throw new Error(`Failed to retrieve all food entries: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to retrieve all food entries: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`
+    );
   }
 }
 
 /**
  * Adds a new food entry for a user on a specific date
- * 
+ *
  * @param username - The username of the user
  * @param description - Food description
  * @param brandName - Brand name of the food (optional)
@@ -171,13 +182,17 @@ export async function addFoodAtDate(
     return newFood;
   } catch (error) {
     console.error(`Error adding food for user ${username}:`, error);
-    throw new Error(`Failed to add food entry: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to add food entry: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`
+    );
   }
 }
 
 /**
  * Deletes a specific food entry by ID
- * 
+ *
  * @param foodId - The ID of the food entry to delete
  * @returns Promise resolving to the deleted food entry
  */
@@ -203,13 +218,17 @@ export async function deleteFoodById(foodId: number) {
     return deletedFood;
   } catch (error) {
     console.error(`Error deleting food with ID ${foodId}:`, error);
-    throw new Error(`Failed to delete food entry: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to delete food entry: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`
+    );
   }
 }
 
 /**
  * Updates a specific food entry by ID
- * 
+ *
  * @param foodId - The ID of the food entry to update
  * @param newDescription - Updated food description
  * @param newBrandName - Updated brand name
@@ -266,13 +285,17 @@ export async function updateFoodById(
     return updatedFood;
   } catch (error) {
     console.error(`Error updating food with ID ${foodId}:`, error);
-    throw new Error(`Failed to update food entry: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to update food entry: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`
+    );
   }
 }
 
 /**
  * Gets food entries summary statistics for a user by day
- * 
+ *
  * @param username - The username of the user
  * @returns Promise resolving to an object with daily totals
  */
@@ -283,34 +306,48 @@ export async function getFoodStatsByDay(username: string) {
 
   try {
     const foods = await getAllFoods(username);
-    
+
+    // Define the type for our daily stats
+    interface DailyStats {
+      date: string;
+      totalCalories: number;
+      totalProtein: number;
+      totalFat: number;
+      totalCarbs: number;
+      entries: number;
+    }
+
     // Group foods by day and calculate totals
-    const statsByDay = foods.reduce((acc, food) => {
-      const day = new Date(food.createdAt).toISOString().split('T')[0];
-      
-      if (!acc[day]) {
-        acc[day] = {
+    const statsByDay: Record<string, DailyStats> = {};
+
+    foods.forEach((food) => {
+      const day = new Date(food.createdAt).toISOString().split("T")[0];
+
+      if (!statsByDay[day]) {
+        statsByDay[day] = {
           date: day,
           totalCalories: 0,
           totalProtein: 0,
           totalFat: 0,
           totalCarbs: 0,
-          entries: 0
+          entries: 0,
         };
       }
-      
-      acc[day].totalCalories += food.calories;
-      acc[day].totalProtein += food.protein;
-      acc[day].totalFat += food.fat;
-      acc[day].totalCarbs += food.carbs;
-      acc[day].entries += 1;
-      
-      return acc;
-    }, {});
-    
+
+      statsByDay[day].totalCalories += food.calories;
+      statsByDay[day].totalProtein += food.protein;
+      statsByDay[day].totalFat += food.fat;
+      statsByDay[day].totalCarbs += food.carbs;
+      statsByDay[day].entries += 1;
+    });
+
     return Object.values(statsByDay);
   } catch (error) {
     console.error(`Error getting food stats for user ${username}:`, error);
-    throw new Error(`Failed to retrieve food statistics: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to retrieve food statistics: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`
+    );
   }
 }
