@@ -283,3 +283,55 @@ export default function Home({ username }) {
             <div className="text-center py-16 text-gray-400">
               <p>No weight data available.</p>
               <p className="mt-2 text-sm">Add your weight below to start tracking.</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div id="weight-form" className="bg-gray-800 rounded-xl p-6 shadow-lg max-w-md mx-auto mt-12">
+        <h2 className="text-center font-semibold text-2xl mb-6 text-orange-400">Track Your Weight</h2>
+        <form onSubmit={handleWeightSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="weight-input" className="block text-sm font-medium mb-1">
+              Current Weight (kg)
+            </label>
+            <div className="relative">
+              <input
+                id="weight-input"
+                type="number"
+                step="0.1"
+                min="1"
+                max="500"
+                placeholder="Enter your weight"
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
+                className="rounded-lg p-3 pr-12 text-black w-full focus:ring-2 focus:ring-orange-400 focus:outline-none"
+                required
+              />
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">kg</span>
+            </div>
+            <p className="text-xs text-gray-400 mt-1">Record your weight to track changes over time</p>
+          </div>
+          
+          <button
+            type="submit"
+            className="w-full bg-orange-400 hover:bg-orange-500 text-white font-medium py-3 rounded-lg transition duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
+          >
+            Save Weight
+          </button>
+        </form>
+        
+        {message && (
+          <div className={`mt-4 p-3 rounded-lg text-center text-sm ${message.includes("Error") ? "bg-red-500/20 text-red-100" : "bg-green-500/20 text-green-100"}`}>
+            {message}
+          </div>
+        )}
+      </div>
+      
+      <div className="text-center text-sm text-gray-400 mt-12 mb-8">
+        <p>Consistently tracking your weight helps you monitor progress toward your health goals.</p>
+        <p>For best results, weigh yourself at the same time each day, preferably in the morning.</p>
+      </div>
+    </div>
+  );
+}
